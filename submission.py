@@ -10,10 +10,25 @@ Multi-line string is supported, in case you have a longer answer.
 
 
 def crawler_bfs(seed_url: str):
-    raise NotImplementedError  # TODO: Replace this line with your code
+    frontier = []
+    frontier.append(seed_url)
+    uniqueSet = {seed_url}
+    depth = 0
+    while frontier:
+        current_state = frontier.pop()
+        links = visit_url(current_state)
+        uniqueSet.add(current_state)
+        depth += 1
+        if depth >= 500:
+            return
+        for link in links:
+            if link not in uniqueSet:
+                frontier.append(link)
+
 
 
 def crawler_dfs(seed_url: str):
+    #call visit_url
     raise NotImplementedError  # TODO: Replace this line with your code
 
 
