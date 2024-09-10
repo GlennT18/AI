@@ -20,15 +20,20 @@ def crawler_bfs(seed_url: str):
         for node in range(len(frontier)):
             currentState = frontier.pop()
             links = visit_url(currentState)
+            depth += 1
+            if depth >= maxDepth:
+                print(depth)
+                print("Max Depth Reached")
+                return
 
             for link in links:
                 if link not in uniqueSet:
                     uniqueSet.add(link)
                     nextFrontier.append(link)
-        
+                         
         frontier = nextFrontier
-        depth += 1
         if depth >= maxDepth:
+            print(depth)
             print("Max Depth Reached")
             return
 
