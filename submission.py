@@ -18,8 +18,8 @@ def crawler_bfs(seed_url: str):
     while frontier:
         nextFrontier = []
         for node in range(len(frontier)):
-            current_state = frontier.pop()
-            links = visit_url(current_state)
+            currentState = frontier.pop()
+            links = visit_url(currentState)
 
             for link in links:
                 if link not in uniqueSet:
@@ -34,9 +34,29 @@ def crawler_bfs(seed_url: str):
 
 
 def crawler_dfs(seed_url: str):
-    #call visit_url
-    raise NotImplementedError  # TODO: Replace this line with your code
+    frontier = [seed_url]
+    uniqueSet = {seed_url}
+    depth = 0
+    maxDepth = 500
 
+    while frontier:
+        currentState = frontier.pop()
+        if depth >= maxDepth:
+            print("Max Depth Reached")
+            return
+        
+        links = visit_url(currentState)
+        for link in links:
+            if link not in uniqueSet:
+                uniqueSet.add(link)
+                frontier.append(link)
+
+        if not frontier:
+            depth += 1
+
+    if depth >= maxDepth:
+        print("Max Depth Reached")
+        return
 
 def word_path(
         dict_file_path: str,
