@@ -1,6 +1,15 @@
 from typing import List
 from utils import visit_url
 
+"""
+Sumbit:
+submission.py
+bfs.txt
+dfs.txt
+cold-warm.txt
+small-short.txt
+"""
+
 # Please do not rename this variable!
 TASK3_RESPONSE = """
 TODO: Set your answer to task 3's question to this variable's value
@@ -22,8 +31,6 @@ def crawler_bfs(seed_url: str):
             links = visit_url(currentState)
             depth += 1
             if depth >= maxDepth:
-                print(depth)
-                print("Max Depth Reached")
                 return
 
             for link in links:
@@ -33,8 +40,6 @@ def crawler_bfs(seed_url: str):
                          
         frontier = nextFrontier
         if depth >= maxDepth:
-            print(depth)
-            print("Max Depth Reached")
             return
 
 
@@ -47,20 +52,16 @@ def crawler_dfs(seed_url: str):
     while frontier:
         currentState = frontier.pop()
         if depth >= maxDepth:
-            print("Max Depth Reached")
             return
         
         links = visit_url(currentState)
+        depth += 1
         for link in links:
             if link not in uniqueSet:
                 uniqueSet.add(link)
-                frontier.append(link)
-
-        if not frontier:
-            depth += 1
+                frontier.append(link)  
 
     if depth >= maxDepth:
-        print("Max Depth Reached")
         return
 
 def word_path(
