@@ -12,17 +12,17 @@ small-short.txt
 
 # Please do not rename this variable!
 TASK3_RESPONSE = """
-TODO: Set your answer to task 3's question to this variable's value
-
-Multi-line string is supported, in case you have a longer answer.
+I believe we should use breadth first search for the search enginge. This is becuase the use of BFS allows for more course details to be shown at once
+If you search for courses, it will return all of the classes within that directory. But if you are using DFS, you will see a lot more information related
+to the first class before you see any information related to the second class.
 """
 
 
 def crawler_bfs(seed_url: str):
-    frontier = [seed_url]
-    uniqueSet = {seed_url}
-    depth = 0
-    maxDepth = 500
+    frontier    = [seed_url]
+    uniqueSet   = {seed_url}
+    depth       = 0
+    maxDepth    = 500
 
     while frontier:
         nextFrontier = []
@@ -44,10 +44,10 @@ def crawler_bfs(seed_url: str):
 
 
 def crawler_dfs(seed_url: str):
-    frontier = [seed_url]
-    uniqueSet = {seed_url}
-    depth = 0
-    maxDepth = 500
+    frontier    = [seed_url]
+    uniqueSet   = {seed_url}
+    depth       = 0
+    maxDepth    = 500
 
     while frontier:
         currentState = frontier.pop()
@@ -69,4 +69,12 @@ def word_path(
         start_word: str,
         target_word: str,
 ) -> List[str]:
-    raise NotImplementedError  # TODO: Replace this line with your code
+    totalWords = []
+    with open(dict_file_path, 'r') as file:
+        for word in file:
+            word = word.strip().lower()
+            totalWords.append(word)
+
+    #do bfs through totalWords with start_word as start state and target word as goal state
+    frontier = [start_word]
+    goal_state = [target_word]
