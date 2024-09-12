@@ -69,12 +69,40 @@ def word_path(
         start_word: str,
         target_word: str,
 ) -> List[str]:
-    totalWords = []
+    #creating word dictionary
+    totalWords = set()
     with open(dict_file_path, 'r') as file:
         for word in file:
             word = word.strip().lower()
-            totalWords.append(word)
+            totalWords.add(word)
 
-    #do bfs through totalWords with start_word as start state and target word as goal state
+    #frontier
     frontier = [start_word]
     goal_state = [target_word]
+    used_words = set()
+    path = []
+
+    while frontier:
+        current_word = frontier.pop()
+        path.append(current_word)
+
+        for letter in current_word:
+            index = current_word.index(letter)
+            for char in 'abcdefghijklmnopqrstuvwxyz':
+                current_word[index] = str(char)
+
+                if current_word == target_word:
+                    print(path)
+                    return path
+                
+                if current_word in totalWords and current_word not in path:
+                    path.append(current_word)
+                    frontier.append(current_word)
+
+    # No path found
+    return []
+
+
+    
+    
+    
