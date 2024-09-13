@@ -19,21 +19,26 @@ to the first class before you see any information related to the second class.
 
 
 def crawler_bfs(seed_url: str):
+    #setting up frontier, unique set(unique urls), and depth
     frontier    = [seed_url]
     uniqueSet   = {seed_url}
     depth       = 0
     maxDepth    = 500
 
+    #starting bfs
     while frontier:
         nextFrontier = []
-        for node in range(len(frontier)):
+        for url in range(len(frontier)):
+            #for every url in frontier
             currentState = frontier.pop()
             links = visit_url(currentState)
             depth += 1
             if depth >= maxDepth:
                 return
-
+            
+            #for each link gathered
             for link in links:
+                #if its a new link add it to set and frontier
                 if link not in uniqueSet:
                     uniqueSet.add(link)
                     nextFrontier.append(link)
@@ -44,19 +49,23 @@ def crawler_bfs(seed_url: str):
 
 
 def crawler_dfs(seed_url: str):
+    #set up frontier, uniqueset(unique urls), and depth
     frontier    = [seed_url]
     uniqueSet   = {seed_url}
     depth       = 0
     maxDepth    = 500
 
+    #start dfs search
     while frontier:
         currentState = frontier.pop()
         if depth >= maxDepth:
             return
         
+        #getting new links
         links = visit_url(currentState)
         depth += 1
         for link in links:
+            #if link is new, add it to set and update frontier
             if link not in uniqueSet:
                 uniqueSet.add(link)
                 frontier.append(link)  
@@ -69,36 +78,34 @@ def word_path(
         start_word: str,
         target_word: str,
 ) -> List[str]:
-    #creating word dictionary
-    totalWords = set()
+    #getting all the words
+    total_words = set()
     with open(dict_file_path, 'r') as file:
         for word in file:
-            word = word.strip().lower()
-            totalWords.add(word)
+            total_words.add(word.strip().lower())
 
-    #frontier
-    frontier = [start_word]
-    goal_state = [target_word]
-    used_words = set()
-    path = []
-
+    #set up frontier and visited
+    frontier = ([(start_word, [start_word])])
+    visited = set()
+    visited.add(start_word)
+    
+    #bfs search starts now
+    word_length = len(start_word)
     while frontier:
-        current_word = frontier.pop()
-        path.append(current_word)
+        current_word, path = frontier.pop(0)
 
-        for letter in current_word:
-            index = current_word.index(letter)
+        #iterate over every character and change it
+        for index in range(word_length):
             for char in 'abcdefghijklmnopqrstuvwxyz':
-                current_word[index] = str(char)
-
-                if current_word == target_word:
-                    print(path)
-                    return path
+                next_word = current_word[:index] + char + current_word[index+1:]
                 
-                if current_word in totalWords and current_word not in path:
-                    path.append(current_word)
-                    frontier.append(current_word)
-
+                if next_word in total_words and next_word not in visited:
+                    if next_word == target_word:
+                        return path + [next_word]
+                    
+                    visited.add(next_word)
+                    frontier.append((next_word, path + [next_word]))
+    
     # No path found
     return []
 
