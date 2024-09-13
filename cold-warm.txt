@@ -1,0 +1,13 @@
+PS C:\Users\Glenn\AI> python word_path.py words.txt cold warm
+cold
+cord
+word
+ward
+warm
+PS C:\Users\Glenn\AI> python word_path.py words-smaller.txt cold warm
+cold
+cord
+word
+ward
+warm
+PS C:\Users\Glenn\AI>

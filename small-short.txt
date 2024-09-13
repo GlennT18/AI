@@ -1,0 +1,14 @@
+PS C:\Users\Glenn\AI> python word_path.py words-smaller.txt small short
+small
+shall
+shale
+share
+shore
+short
+PS C:\Users\Glenn\AI> python word_path.py words.txt small short
+small
+shall
+shale
+share
+shore
+short

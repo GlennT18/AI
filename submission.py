@@ -79,10 +79,10 @@ def word_path(
         target_word: str,
 ) -> List[str]:
     #getting all the words
-    total_words = set()
+    totalWords = set()
     with open(dict_file_path, 'r') as file:
         for word in file:
-            total_words.add(word.strip().lower())
+            totalWords.add(word.strip().lower())
 
     #set up frontier and visited
     frontier = ([(start_word, [start_word])])
@@ -90,21 +90,21 @@ def word_path(
     visited.add(start_word)
     
     #bfs search starts now
-    word_length = len(start_word)
+    wordLength = len(start_word)
     while frontier:
-        current_word, path = frontier.pop(0)
+        currentWord, path = frontier.pop(0)
 
         #iterate over every character and change it
-        for index in range(word_length):
+        for index in range(wordLength):
             for char in 'abcdefghijklmnopqrstuvwxyz':
-                next_word = current_word[:index] + char + current_word[index+1:]
+                nextWord = currentWord[:index] + char + currentWord[index+1:]
                 
-                if next_word in total_words and next_word not in visited:
-                    if next_word == target_word:
-                        return path + [next_word]
+                if nextWord in totalWords and nextWord not in visited:
+                    if nextWord == target_word:
+                        return path + [nextWord]
                     
-                    visited.add(next_word)
-                    frontier.append((next_word, path + [next_word]))
+                    visited.add(nextWord)
+                    frontier.append((nextWord, path + [nextWord]))
     
     # No path found
     return []
