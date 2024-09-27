@@ -38,16 +38,17 @@ class ShortestPathProblem(SearchProblem):
         self.city_map = city_map
 
     def start_state(self) -> State:
-        raise NotImplementedError  # TODO: Replace this line with your code
-        # Our solution has 1 line of code, but don't worry if yours doesn't
+        return State(self.start_state)
 
     def is_end(self, state: State) -> bool:
-        raise NotImplementedError  # TODO: Replace this line with your code
-        # Our solution has 1 line of code, but don't worry if yours doesn't
+        return self.end_tag == state.location
 
     def successors_and_costs(self, state: State) -> list[tuple[State, float]]:
         # Note we want to return a list of *2-tuples* of the form:
         #     (successor_state: State, cost: float)
+        #make a state for 2 successors
+        #calculate distance for each successor
+        #return them as a list
         raise NotImplementedError  # TODO: Replace this line with your code
         # Our solution has 7 lines of code, but don't worry if yours doesn't
 
