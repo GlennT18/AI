@@ -38,19 +38,26 @@ class ShortestPathProblem(SearchProblem):
         self.city_map = city_map
 
     def start_state(self) -> State:
-        return State(self.start_state)
+        #TODO:
+        start_state = State(self.start_location)
+        return start_state
 
     def is_end(self, state: State) -> bool:
+        #TODO:
         return self.end_tag == state.location
 
     def successors_and_costs(self, state: State) -> list[tuple[State, float]]:
         # Note we want to return a list of *2-tuples* of the form:
         #     (successor_state: State, cost: float)
-        #make a state for 2 successors
-        #calculate distance for each successor
-        #return them as a list
-        raise NotImplementedError  # TODO: Replace this line with your code
-        # Our solution has 7 lines of code, but don't worry if yours doesn't
+        #TODO: Our solution has 7 lines of code, but don't worry if yours doesn't 
+        successors = []
+        for adj,cost in self.city_map.distances[state.location].items():
+            successor_state = State(adj)
+        
+            if(successor_state not in successors):
+                successors.append(successor_state)
+
+        return successors  
 
 
 ################################################################################
@@ -78,8 +85,10 @@ def get_rit_shortest_path_problem() -> tuple[ShortestPathProblem, str]:
 
     city_map = create_map_with_landmarks(map_filename, landmark_filename)
 
-    raise NotImplementedError  # TODO: Replace this line with your code
+    #TODO: Replace this line with your code
     # Our solution has 2 lines of code, but don't worry if yours doesn't
+    start_location = get_first_location_with_tag('landmark=Golisano_Hall', city_map)
+    end_tag = 'landmark=Global_Village_Plaza'
 
     plot_title = map_filename.split("/")[-1].split("_")[0]
     return ShortestPathProblem(start_location, end_tag, city_map), plot_title
