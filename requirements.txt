@@ -1,0 +1,6 @@
+osmium  # For OSM data
+plotly  # For visualization
+pandas  # Required by plotly
+pytest  # For unit tests
+pytest-testdox  # For long test descriptions in pytest output
+pytest-timeout  # For test timeouts
