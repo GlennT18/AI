@@ -48,7 +48,6 @@ class ShortestPathProblem(SearchProblem):
         tags = self.city_map.tags[state.location]
         #self end tag is what we need to check
         if(self.end_tag in tags):
-            print("end")
             return True
         
 
@@ -128,16 +127,33 @@ class WaypointsShortestPathProblem(SearchProblem):
         self.waypoint_tags = tuple(sorted(waypoint_tags))
 
     def start_state(self) -> State:
-        raise NotImplementedError  # TODO: Replace this line with your code
-        # Our solution has 3 lines of code, but don't worry if yours doesn't
+        #TODO: 3 lines
+        return State(self.start_location)
+        
 
     def is_end(self, state: State) -> bool:
-        raise NotImplementedError  # TODO: Replace this line with your code
-        # Our solution has 4 lines of code, but don't worry if yours doesn't
+        # TODO: 4 lines
+        #if waypoint has been used
+        #if self.end tag == current tags
+        tags = self.city_map.tags[state.location]
+        way_tag = self.waypoint_tags[0]
+        #self end tag is what we need to check
+        if(way_tag in tags):
+            print('hit waypoint')
+        if(self.end_tag in tags):
+            print('hit end')
+            return True
 
     def successors_and_costs(self, state: State) -> list[tuple[State, float]]:
-        raise NotImplementedError  # TODO: Replace this line with your code
+        # TODO: Replace this line with your code
         # Our solution has 10 lines of code, but don't worry if yours doesn't
+        #go to each waypoint tag listed before
+        successors = []
+        for adj,cost in self.city_map.distances[state.location].items():
+            successor_state = State(adj)
+            successors.append((successor_state, cost))
+
+        return successors  
 
 
 ################################################################################
@@ -158,8 +174,10 @@ def get_rit_waypoints_shortest_path_problem() \
 
     city_map = create_map_with_landmarks(map_filename, landmark_filename)
 
-    raise NotImplementedError  # TODO: Replace this line with your code
-    # Our solution has 3 lines of code, but don't worry if yours doesn't
+    #TODO: Replace this line with your code
+    start_location = get_first_location_with_tag('landmark=Golisano_Hall', city_map)
+    waypoint_tags = ['landmark=Crossroads']
+    end_tag = 'landmark=Global_Village_Plaza'
 
     plot_title = map_filename.split("/")[-1].split("_")[0]
     return WaypointsShortestPathProblem(
