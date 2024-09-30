@@ -39,12 +39,18 @@ class ShortestPathProblem(SearchProblem):
 
     def start_state(self) -> State:
         #TODO:
-        start_state = State(self.start_location)
-        return start_state
+        return State(self.start_location)
+        
 
     def is_end(self, state: State) -> bool:
         #TODO:
-        return self.end_tag == state.location
+        #if the tags of the starting location
+        tags = self.city_map.tags[state.location]
+        #self end tag is what we need to check
+        if(self.end_tag in tags):
+            print("end")
+            return True
+        
 
     def successors_and_costs(self, state: State) -> list[tuple[State, float]]:
         # Note we want to return a list of *2-tuples* of the form:
@@ -53,9 +59,7 @@ class ShortestPathProblem(SearchProblem):
         successors = []
         for adj,cost in self.city_map.distances[state.location].items():
             successor_state = State(adj)
-        
-            if(successor_state not in successors):
-                successors.append(successor_state)
+            successors.append((successor_state, cost))
 
         return successors  
 
