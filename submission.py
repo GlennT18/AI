@@ -136,13 +136,22 @@ class WaypointsShortestPathProblem(SearchProblem):
         #if waypoint has been used
         #if self.end tag == current tags
         tags = self.city_map.tags[state.location]
-        way_tag = self.waypoint_tags[0]
         #self end tag is what we need to check
-        if(way_tag in tags):
-            print('hit waypoint')
+        way_point = str(self.waypoint_tags[0])
+        # print(way_point)
+        # print(self.end_tag)
+        if(way_point in tags):
+            print("wayPoint")
+            print(tags)
+            print(way_point)
+
         if(self.end_tag in tags):
-            print('hit end')
+            print("End")
+            print(tags)
+            print(self.end_tag)
+            print(way_point)
             return True
+
 
     def successors_and_costs(self, state: State) -> list[tuple[State, float]]:
         # TODO: Replace this line with your code
@@ -151,6 +160,11 @@ class WaypointsShortestPathProblem(SearchProblem):
         successors = []
         for adj,cost in self.city_map.distances[state.location].items():
             successor_state = State(adj)
+
+            #check if waypoint
+            #check against self.way_point_tags
+
+
             successors.append((successor_state, cost))
 
         return successors  
@@ -176,7 +190,7 @@ def get_rit_waypoints_shortest_path_problem() \
 
     #TODO: Replace this line with your code
     start_location = get_first_location_with_tag('landmark=Golisano_Hall', city_map)
-    waypoint_tags = ['landmark=Crossroads']
+    waypoint_tags = ['landmark=Sustainability_Institute']
     end_tag = 'landmark=Global_Village_Plaza'
 
     plot_title = map_filename.split("/")[-1].split("_")[0]
