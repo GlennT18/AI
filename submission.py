@@ -1,4 +1,4 @@
-from city_map import CityMap, compute_distance, get_first_location_with_tag
+from city_map import CityMap, Geolocation, compute_distance, get_first_location_with_tag
 from map_utils import create_map_with_landmarks
 from search import Heuristic, SearchProblem, State, UniformCostSearch
 
@@ -212,13 +212,25 @@ class StraightLineHeuristic(Heuristic):
         self.city_map = city_map
 
         # Precompute
-        raise NotImplementedError  # TODO: Replace this line with your code
-        # Our solution has 5 lines of code, but don't worry if yours doesn't
+        #TODO: 5 lines
+        start_lat = self.city_map.geolocations[self.end_tag].latitude
+        start_lon = self.city_map.geolocations[self.end_tag].longitude
+
+        #compute distance
+        distance = compute_distance(start_lat, start_lon)
+     
 
     def evaluate(self, state: State) -> float:
-        raise NotImplementedError  # TODO: Replace this line with your code
-        # Our solution has 6 lines of code, but don't worry if yours doesn't
+       # TODO: 6 lines
+        start_lat = self.city_map.geolocations[self.end_tag].latitude
+        start_long = self.city_map.geolocations[self.end_tag].latitude
+        start = Geolocation(start_lat, start_long)
 
+        end_lat = state.location[0]
+        end_long = state.location[1]
+        end = Geolocation(end_lat, end_long)
+
+        return(compute_distance(start, end))
 
 ################################################################################
 # Part 3b: "No waypoints" heuristic for A*
@@ -241,8 +253,9 @@ class NoWaypointsHeuristic(Heuristic):
                 """
                 Return special "END" state
                 """
-                raise NotImplementedError  # TODO: Replace this line with your code
-                # Our solution has 1 line of code, but don't worry if yours doesn't
+                # TODO: 1 line
+                return(self.is_end)
+
 
             def is_end(self, state: State) -> bool:
                 """
@@ -251,8 +264,8 @@ class NoWaypointsHeuristic(Heuristic):
                 returns False),  UCS will exhaustively compute costs to *all*
                 other states.
                 """
-                raise NotImplementedError  # TODO: Replace this line with your code
-                # Our solution has 1 line of code, but don't worry if yours doesn't
+                #TODO: 1 line
+                return False
 
             def successors_and_costs(
                     self, state: State) -> list[tuple[State, float]]:
@@ -268,8 +281,9 @@ class NoWaypointsHeuristic(Heuristic):
         # Call UCS.solve on our `ReverseShortestPathProblem` instance.  Because
         # there is *not* a valid end state (`is_end` always returns False),
         # will exhaustively compute costs to *all* other states.
-        raise NotImplementedError  # TODO: Replace this line with your code
-        # Our solution has 2 lines of code, but don't worry if yours doesn't
+        # TODO: 2 lines
+        UniformCostSearch.solve(ReverseShortestPathProblem)
+
 
         # Now that we've exhaustively computed costs from any valid
         # "end" location (any location with `end_tag`), we can retrieve
@@ -278,9 +292,9 @@ class NoWaypointsHeuristic(Heuristic):
         #
         # Note that we are making a critical assumption here:
         # costs are symmetric!
-        raise NotImplementedError  # TODO: Replace this line with your code
-        # Our solution has 1 line of code, but don't worry if yours doesn't
+        # TODO: 1 line
+        costs = UniformCostSearch.past_costs
+        
 
     def evaluate(self, state: State) -> float:
-        raise NotImplementedError  # TODO: Replace this line with your code
-        # Our solution has 1 line of code, but don't worry if yours doesn't
+        self.evaluate(self, state)
