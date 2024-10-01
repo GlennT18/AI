@@ -1,4 +1,4 @@
-from city_map import CityMap, compute_distance, get_first_location_with_tag
+from city_map import CityMap, Geolocation, compute_distance, get_first_location_with_tag
 from map_utils import create_map_with_landmarks
 from search import Heuristic, SearchProblem, State, UniformCostSearch
 
@@ -38,27 +38,29 @@ class ShortestPathProblem(SearchProblem):
         self.city_map = city_map
 
     def start_state(self) -> State:
+        #TODO:
         return State(self.start_location)
+        
 
     def is_end(self, state: State) -> bool:
-        #compare eng_tag to the list of tags at the current location
-        return (self.end_tag in self.city_map.tags)
+        #TODO:
+        #if the tags of the starting location
+        tags = self.city_map.tags[state.location]
+        #self end tag is what we need to check
+        if(self.end_tag in tags):
+            return True
+        
 
     def successors_and_costs(self, state: State) -> list[tuple[State, float]]:
         # Note we want to return a list of *2-tuples* of the form:
         #     (successor_state: State, cost: float)
-        #make a state for each adjacent successor
-        #calculate distance for each successor
-        #return them as a list
+        #TODO: Our solution has 7 lines of code, but don't worry if yours doesn't 
         successors = []
-        for adjacent,cost in self.city_map.distances[self.start_location].items():
-            #create new state for adjacent location
-            successor_state = State(adjacent)
+        for adj,cost in self.city_map.distances[state.location].items():
+            successor_state = State(adj)
+            successors.append((successor_state, cost))
 
-            #priority queue
-            successors.append((successor_state,cost))
-
-        return successors
+        return successors  
 
 
 ################################################################################
@@ -86,9 +88,10 @@ def get_rit_shortest_path_problem() -> tuple[ShortestPathProblem, str]:
 
     city_map = create_map_with_landmarks(map_filename, landmark_filename)
 
+    #TODO: Replace this line with your code
     # Our solution has 2 lines of code, but don't worry if yours doesn't
     start_location = get_first_location_with_tag('landmark=Golisano_Hall', city_map)
-    end_tag = 'landmark=Global_Village_Plaza'    
+    end_tag = 'landmark=Global_Village_Plaza'
 
     plot_title = map_filename.split("/")[-1].split("_")[0]
     return ShortestPathProblem(start_location, end_tag, city_map), plot_title
@@ -124,16 +127,47 @@ class WaypointsShortestPathProblem(SearchProblem):
         self.waypoint_tags = tuple(sorted(waypoint_tags))
 
     def start_state(self) -> State:
-        raise NotImplementedError  # TODO: Replace this line with your code
-        # Our solution has 3 lines of code, but don't worry if yours doesn't
+        #TODO: 3 lines
+        return State(self.start_location, custom_data=frozenset())
+        
 
     def is_end(self, state: State) -> bool:
-        raise NotImplementedError  # TODO: Replace this line with your code
-        # Our solution has 4 lines of code, but don't worry if yours doesn't
+        # TODO: 4 lines
+        #if waypoint has been used
+        #if self.end tag == current tags
+        if state.custom_data is not None:
+            visited_waypoints = state.custom_data
+        else:
+            visited_waypoints = frozenset()
+        tags = self.city_map.tags[state.location]
+        #self end tag is what we need to check
+        return(
+            frozenset(self.waypoint_tags) == visited_waypoints
+            and self.end_tag in tags
+        )
+
+
 
     def successors_and_costs(self, state: State) -> list[tuple[State, float]]:
-        raise NotImplementedError  # TODO: Replace this line with your code
+        # TODO: Replace this line with your code
         # Our solution has 10 lines of code, but don't worry if yours doesn't
+        #go to each waypoint tag listed before
+        successors = []
+        visited_waypoints = state.custom_data  # frozenset of visited waypoints
+
+        for adj, cost in self.city_map.distances[state.location].items():
+            # Update visited waypoints if this location is one of the waypoint tags
+            new_visited_waypoints = set(visited_waypoints)
+            tags = self.city_map.tags[adj]
+            for tag in self.waypoint_tags:
+                if tag in tags:
+                    new_visited_waypoints.add(tag)
+
+            # Create a new state with the updated frozenset of visited waypoints
+            successor_state = State(adj, custom_data=frozenset(new_visited_waypoints))
+            successors.append((successor_state, cost))
+
+        return successors 
 
 
 ################################################################################
@@ -154,8 +188,10 @@ def get_rit_waypoints_shortest_path_problem() \
 
     city_map = create_map_with_landmarks(map_filename, landmark_filename)
 
-    raise NotImplementedError  # TODO: Replace this line with your code
-    # Our solution has 3 lines of code, but don't worry if yours doesn't
+    #TODO: Replace this line with your code
+    start_location = get_first_location_with_tag('landmark=Golisano_Hall', city_map)
+    waypoint_tags = ['landmark=Sustainability_Institute', 'landmark=Slaughter_Hall']
+    end_tag = 'landmark=Global_Village_Plaza'
 
     plot_title = map_filename.split("/")[-1].split("_")[0]
     return WaypointsShortestPathProblem(
@@ -176,13 +212,25 @@ class StraightLineHeuristic(Heuristic):
         self.city_map = city_map
 
         # Precompute
-        raise NotImplementedError  # TODO: Replace this line with your code
-        # Our solution has 5 lines of code, but don't worry if yours doesn't
+        #TODO: 5 lines
+        start_lat = self.city_map.geolocations[self.end_tag].latitude
+        start_lon = self.city_map.geolocations[self.end_tag].longitude
+
+        #compute distance
+        distance = compute_distance(start_lat, start_lon)
+     
 
     def evaluate(self, state: State) -> float:
-        raise NotImplementedError  # TODO: Replace this line with your code
-        # Our solution has 6 lines of code, but don't worry if yours doesn't
+       # TODO: 6 lines
+        start_lat = self.city_map.geolocations[self.end_tag].latitude
+        start_long = self.city_map.geolocations[self.end_tag].latitude
+        start = Geolocation(start_lat, start_long)
 
+        end_lat = state.location[0]
+        end_long = state.location[1]
+        end = Geolocation(end_lat, end_long)
+
+        return(compute_distance(start, end))
 
 ################################################################################
 # Part 3b: "No waypoints" heuristic for A*
@@ -205,8 +253,9 @@ class NoWaypointsHeuristic(Heuristic):
                 """
                 Return special "END" state
                 """
-                raise NotImplementedError  # TODO: Replace this line with your code
-                # Our solution has 1 line of code, but don't worry if yours doesn't
+                # TODO: 1 line
+                return(self.is_end)
+
 
             def is_end(self, state: State) -> bool:
                 """
@@ -215,8 +264,8 @@ class NoWaypointsHeuristic(Heuristic):
                 returns False),  UCS will exhaustively compute costs to *all*
                 other states.
                 """
-                raise NotImplementedError  # TODO: Replace this line with your code
-                # Our solution has 1 line of code, but don't worry if yours doesn't
+                #TODO: 1 line
+                return False
 
             def successors_and_costs(
                     self, state: State) -> list[tuple[State, float]]:
@@ -232,8 +281,9 @@ class NoWaypointsHeuristic(Heuristic):
         # Call UCS.solve on our `ReverseShortestPathProblem` instance.  Because
         # there is *not* a valid end state (`is_end` always returns False),
         # will exhaustively compute costs to *all* other states.
-        raise NotImplementedError  # TODO: Replace this line with your code
-        # Our solution has 2 lines of code, but don't worry if yours doesn't
+        # TODO: 2 lines
+        UniformCostSearch.solve(ReverseShortestPathProblem)
+
 
         # Now that we've exhaustively computed costs from any valid
         # "end" location (any location with `end_tag`), we can retrieve
@@ -242,9 +292,9 @@ class NoWaypointsHeuristic(Heuristic):
         #
         # Note that we are making a critical assumption here:
         # costs are symmetric!
-        raise NotImplementedError  # TODO: Replace this line with your code
-        # Our solution has 1 line of code, but don't worry if yours doesn't
+        # TODO: 1 line
+        costs = UniformCostSearch.past_costs
+        
 
     def evaluate(self, state: State) -> float:
-        raise NotImplementedError  # TODO: Replace this line with your code
-        # Our solution has 1 line of code, but don't worry if yours doesn't
+        self.evaluate(self, state)
