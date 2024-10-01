@@ -128,29 +128,24 @@ class WaypointsShortestPathProblem(SearchProblem):
 
     def start_state(self) -> State:
         #TODO: 3 lines
-        return State(self.start_location)
+        return State(self.start_location, custom_data=frozenset())
         
 
     def is_end(self, state: State) -> bool:
         # TODO: 4 lines
         #if waypoint has been used
         #if self.end tag == current tags
+        if state.custom_data is not None:
+            visited_waypoints = state.custom_data
+        else:
+            visited_waypoints = frozenset()
         tags = self.city_map.tags[state.location]
         #self end tag is what we need to check
-        way_point = str(self.waypoint_tags[0])
-        # print(way_point)
-        # print(self.end_tag)
-        if(way_point in tags):
-            print("wayPoint")
-            print(tags)
-            print(way_point)
+        return(
+            frozenset(self.waypoint_tags) == visited_waypoints
+            and self.end_tag in tags
+        )
 
-        if(self.end_tag in tags):
-            print("End")
-            print(tags)
-            print(self.end_tag)
-            print(way_point)
-            return True
 
 
     def successors_and_costs(self, state: State) -> list[tuple[State, float]]:
@@ -158,16 +153,21 @@ class WaypointsShortestPathProblem(SearchProblem):
         # Our solution has 10 lines of code, but don't worry if yours doesn't
         #go to each waypoint tag listed before
         successors = []
-        for adj,cost in self.city_map.distances[state.location].items():
-            successor_state = State(adj)
+        visited_waypoints = state.custom_data  # frozenset of visited waypoints
 
-            #check if waypoint
-            #check against self.way_point_tags
+        for adj, cost in self.city_map.distances[state.location].items():
+            # Update visited waypoints if this location is one of the waypoint tags
+            new_visited_waypoints = set(visited_waypoints)
+            tags = self.city_map.tags[adj]
+            for tag in self.waypoint_tags:
+                if tag in tags:
+                    new_visited_waypoints.add(tag)
 
-
+            # Create a new state with the updated frozenset of visited waypoints
+            successor_state = State(adj, custom_data=frozenset(new_visited_waypoints))
             successors.append((successor_state, cost))
 
-        return successors  
+        return successors 
 
 
 ################################################################################
@@ -190,7 +190,7 @@ def get_rit_waypoints_shortest_path_problem() \
 
     #TODO: Replace this line with your code
     start_location = get_first_location_with_tag('landmark=Golisano_Hall', city_map)
-    waypoint_tags = ['landmark=Sustainability_Institute']
+    waypoint_tags = ['landmark=Sustainability_Institute', 'landmark=Slaughter_Hall']
     end_tag = 'landmark=Global_Village_Plaza'
 
     plot_title = map_filename.split("/")[-1].split("_")[0]
