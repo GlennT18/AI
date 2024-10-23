@@ -11,6 +11,7 @@ Multi-line string is supported, in case your response is long.
 def findSum(input, base, letterDict):
         baseCount = len(input)-1
         #iterate over every letter
+        #print(letterDict)
         total = 0
         for letter in input:
             
@@ -20,7 +21,7 @@ def findSum(input, base, letterDict):
             value = letterDict[letter]
             multiplier = base**baseCount
 
-            print(value, multiplier)
+            #print(value, multiplier)
             total += value * multiplier
 
             baseCount -= 1
@@ -65,9 +66,14 @@ class Solver:
 
         #sum both sides of the equation
         rhsSum = findSum(rhs, base, letterDict) 
-        print(rhsSum)
         
+        lhsSum = 0
+        for listy in lhsList:
+             lhsSum += findSum(listy, base, letterDict)
+        
+        #print(lhsSum, rhsSum)
         #add to model(model.add(lhs == rhs))
+        model.add(lhsSum == rhsSum)
 
         #return dictionary of solutions
 
