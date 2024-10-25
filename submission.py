@@ -26,7 +26,7 @@ def findSum(input, base, letterDict):
         return total
 
 class VarArraySolutionPrinter(cp_model.CpSolverSolutionCallback):
-    """Print intermediate solutions."""
+    """Print intermediate solutions. Pulled from CPSolver"""
 
     def __init__(self, variables: list[cp_model.IntVar]):
         cp_model.CpSolverSolutionCallback.__init__(self)
@@ -82,7 +82,7 @@ class Solver:
         modelLetters = []
         for kp in letterDict:
             #model.new_int_var(first_variable, base - 1, letter)
-            #print("letter:",letterDict.get(kp), "base:", base - 1, "KeyPair:", kp)
+            print("letter:",letterDict.get(kp), "base:", base - 1, "KeyPair:", kp)
             x = model.new_int_var(letterDict.get(kp), base - 1, kp)
             modelLetters.append(x)
 
@@ -107,7 +107,7 @@ class Solver:
         model.add(
             c * base + p + i * base + s + f * base * base + u * base + n
             == t * base * base * base + r * base * base + u * base + e
-            )
+        )
 
         I am calculating the right hand side and left hand side to total values and adding them
         to the model like this:
