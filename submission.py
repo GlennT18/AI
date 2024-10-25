@@ -25,6 +25,24 @@ def findSum(input, base, letterDict):
 
         return total
 
+class VarArraySolutionPrinter(cp_model.CpSolverSolutionCallback):
+    """Print intermediate solutions."""
+
+    def __init__(self, variables: list[cp_model.IntVar]):
+        cp_model.CpSolverSolutionCallback.__init__(self)
+        self.__variables = variables
+        self.__solution_count = 0
+
+    def on_solution_callback(self) -> None:
+        self.__solution_count += 1
+        for v in self.__variables:
+            print(f"{v}={self.value(v)}", end=" ")
+        print()
+
+    @property
+    def solution_count(self) -> int:
+        return self.__solution_count
+
 class Solver:
     def __init__(self):
         # If you want to add any fields to this class, define them here
@@ -38,7 +56,6 @@ class Solver:
         #iterate over the input
         letterSet = set()
         symbolSet = ('+', '=')
-        counter = 0
         letterDict = {}
         sentance = ""
         for letter in puzzle:
@@ -85,14 +102,25 @@ class Solver:
         
         #print(lhsSum, rhsSum)
         #add to model(model.add(lhs == rhs))
+        """
+        I think this is the issue. Documentation has this:
+        model.add(
+            c * base + p + i * base + s + f * base * base + u * base + n
+            == t * base * base * base + r * base * base + u * base + e
+            )
+
+        I am calculating the right hand side and left hand side to total values and adding them
+        to the model like this:
+        """
         model.add(lhsSum == rhsSum)
 
         #check doc to make the model find solutions in a dictionary
         #dict = model.solve()
         solver = cp_model.CpSolver()
+        solution_printer = VarArraySolutionPrinter(modelLetters)
 
         solver.parameters.enumerate_all_solutions = True
-        status = solver.solve(model)
+        status = solver.solve(model, solution_printer)
 
         #return dictionary of solutions
         
