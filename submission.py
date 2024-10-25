@@ -11,21 +11,17 @@ Multi-line string is supported, in case your response is long.
 def findSum(input, base, letterDict):
         baseCount = len(input)-1
         #iterate over every letter
-        print(letterDict)
         total = 0
         for letter in input:
-            
             #multiple letter by base
             #TRUE
             #sum(T * base * base * base, R * base * base, U * base, E)
             value = letterDict[letter]
             multiplier = base**baseCount
 
-            print(value, multiplier)
+            #print(value, multiplier)
             total += value * multiplier
-
             baseCount -= 1
-
 
         return total
 
@@ -46,18 +42,34 @@ class Solver:
         letterDict = {}
         sentance = ""
         for letter in puzzle:
+            #if the letter is a symbol add it to the sentance but don't assign value
+            if(letter in symbolSet):
+                 sentance = sentance + letter
+
             #makes sure each letter is only counted 1 time
             if(letter not in letterSet and letter not in symbolSet):
                 letterSet.add(letter)
-                #map each letter to a number
-                letterDict[str(letter)] = counter
-                counter += 1
-            sentance = sentance + letter
+                #map each letter to 1 or 0. 1 if it is leading, 0 if not
+                if(sentance == ""):
+                     letterDict[str(letter)] = 1
+                elif(sentance[-1] == "=" or sentance[-1] == "+"):
+                     letterDict[str(letter)] = 1
+                else:
+                     letterDict[str(letter)] = 0
+                
+                # letterDict[str(letter)] = counter
+                # counter += 1
+                sentance = sentance + letter
 
         #create constraints on the model for each letter and their precomputed value
+        modelLetters = []
         for kp in letterDict:
             #model.new_int_var(first_variable, base - 1, letter)
-            model.new_int_var(letterDict.get(kp), base - 1, kp)
+            #print("letter:",letterDict.get(kp), "base:", base - 1, "KeyPair:", kp)
+            x = model.new_int_var(letterDict.get(kp), base - 1, kp)
+            modelLetters.append(x)
+
+        model.add_all_different(modelLetters)
 
         #once you have created a variable for each letter
         sentanceList = sentance.split("=")
@@ -71,13 +83,18 @@ class Solver:
         for listy in lhsList:
              lhsSum += findSum(listy, base, letterDict)
         
-        print(lhsSum, rhsSum)
+        #print(lhsSum, rhsSum)
         #add to model(model.add(lhs == rhs))
         model.add(lhsSum == rhsSum)
 
         #check doc to make the model find solutions in a dictionary
         #dict = model.solve()
+        solver = cp_model.CpSolver()
+
+        solver.parameters.enumerate_all_solutions = True
+        status = solver.solve(model)
 
         #return dictionary of solutions
+        
 
     
