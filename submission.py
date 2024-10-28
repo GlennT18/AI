@@ -3,24 +3,36 @@ from typing import Dict, List
 
 # Please do not rename this variable!
 STEP2_RESPONSE = """
-TODO: Set your answer to step 2's question to this variable's value
+The second arguement in new_int_var(x, y, letter) represents the upper bound
+the value tied to the letter can be. This model finds solutions that makes
+the left side equal the right side, and no letters can have the same value
+assigned to them. 
 
-First variable of new_int_var is the lower bound. If the letter has not appeared before its first variable is 0
-if the letter has appeared before its leading variable is 1. Every letter should be added to the model once, and
-the first variable is either 1 or 0. So I need to fix how I am finding repeat letters and update the function, and
-how I am putting them into the model
+The values that are assigned to each letter are in a range of 1-9 or 0-9.
+9 is our upper bound(second variable). 
 
-Multi-line string is supported, in case your response is long.
+So if our letter was C, the value assigned to that letter can be
+C:1
+C:2
+C:3
+C:4
+C:5
+C:6
+C:7
+C:8
+C:9
 """
 
 from ortools.sat.python import cp_model
 from typing import Dict, List
 
 class VarArraySolutionPrinter(cp_model.CpSolverSolutionCallback):
+    #this is code pulled from CP-SAT solver. Justs handles printing
     def __init__(self, variables: List[cp_model.IntVar]):
         cp_model.CpSolverSolutionCallback.__init__(self)
         self.__variables = variables
         self.__solution_count = 0
+        self.solutions = []
 
     def on_solution_callback(self) -> None:
         self.__solution_count += 1
@@ -33,12 +45,12 @@ class VarArraySolutionPrinter(cp_model.CpSolverSolutionCallback):
         return self.__solution_count
 
 def findSum(input_str: str, base: int, letter_vars: Dict[str, cp_model.IntVar]) -> cp_model.LinearExpr:
-    """Calculate the numeric value of a word based on its letters and base."""
-    total_expr = 0
+    #finds total for the word
+    total = 0
     for i, letter in enumerate(input_str):
         multiplier = base ** (len(input_str) - i - 1)
-        total_expr += letter_vars[letter] * multiplier
-    return total_expr
+        total += letter_vars[letter] * multiplier
+    return total
 
 class Solver:
     def solve(self, puzzle: str) -> List[Dict[str, int]]:
@@ -70,7 +82,7 @@ class Solver:
         solver.parameters.enumerate_all_solutions = True
         status = solver.Solve(model, solution_printer)
 
-        print(f"Status = {solver.StatusName(status)}")
-        print(f"Number of solutions found: {solution_printer.solution_count}")
+        #print(f"Status = {solver.StatusName(status)}")
+        #print(f"Number of solutions found: {solution_printer.solution_count}")
 
-        return []
+        return(solution_printer.solutions)
