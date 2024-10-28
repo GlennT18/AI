@@ -1,21 +1,6 @@
 from ortools.sat.python import cp_model
 from typing import Dict, List
 
-# Please do not rename this variable!
-STEP2_RESPONSE = """
-TODO: Set your answer to step 2's question to this variable's value
-
-First variable of new_int_var is the lower bound. If the letter has not appeared before its first variable is 0
-if the letter has appeared before its leading variable is 1. Every letter should be added to the model once, and
-the first variable is either 1 or 0. So I need to fix how I am finding repeat letters and update the function, and
-how I am putting them into the model
-
-Multi-line string is supported, in case your response is long.
-"""
-
-from ortools.sat.python import cp_model
-from typing import Dict, List
-
 class VarArraySolutionPrinter(cp_model.CpSolverSolutionCallback):
     def __init__(self, variables: List[cp_model.IntVar]):
         cp_model.CpSolverSolutionCallback.__init__(self)
