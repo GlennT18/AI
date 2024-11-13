@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+# python -m pytest test_submission.py    
 from submission import *
 from logic import *
 

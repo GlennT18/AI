@@ -19,7 +19,9 @@ def question_1a() -> Formula:
 
     # Don't forget to return the constructed formula!
     # BEGIN_YOUR_CODE
-    raise NotImplementedError  # TODO: Replace this line with your code
+    
+    # Implies((Weekend, notRaining), GoOut)
+    return(Implies(And(Weekend, Not(Raining)), GoOut))
     # END_YOUR_CODE
 
 
@@ -33,8 +35,9 @@ def question_1b() -> Formula:
     Sunday = Atom('Sunday')
 
     # Don't forget to return the constructed formula!
+
     # BEGIN_YOUR_CODE
-    raise NotImplementedError  # TODO: Replace this line with your code
+    return(Implies(ShutDownServers, Sunday))
     # END_YOUR_CODE
 
 
@@ -51,8 +54,9 @@ def question_1c() -> Formula:
     NewFeature = Atom('NewFeature')
 
     # Don't forget to return the constructed formula!
+
     # BEGIN_YOUR_CODE
-    raise NotImplementedError  # TODO: Replace this line with your code
+    return(Equiv(NewTicket, (Or(NewIssue, NewFeature))))
     # END_YOUR_CODE
 
 
