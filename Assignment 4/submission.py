@@ -76,7 +76,7 @@ def question_2a() -> Formula:
 
     # Don't forget to return the constructed formula!
     # BEGIN_YOUR_CODE
-    raise NotImplementedError  # TODO: Replace this line with your code
+    return(Or(Programmer(bob),Writer(bob)))
     # END_YOUR_CODE
 
 
@@ -91,7 +91,7 @@ def question_2b() -> Formula:
 
     # Don't forget to return the constructed formula!
     # BEGIN_YOUR_CODE
-    raise NotImplementedError  # TODO: Replace this line with your code
+    return Exists('$x', And(Student('$x'), KnowsLogic('$x')))
     # END_YOUR_CODE
 
 
@@ -107,8 +107,13 @@ def question_2c() -> Formula:
     def Owns(x, y): return Atom('Owns', x, y)
 
     # Don't forget to return the constructed formula!
-    # BEGIN_YOUR_CODE
-    raise NotImplementedError  # TODO: Replace this line with your code
+
+    #Logic flow since this one was confusing
+    #ForAll(x)                  - for every vehicle 
+    #   Exists(y)               - every person that exists 
+    #       Owns(y,x)           - specific person owns specific vehicle
+    #           And Person(y)   - specific person
+    return(Forall('$x', Implies(Vehicle('$x'), Exists('$y', And(Person('$y'), Owns('$y','$x'))))))
     # END_YOUR_CODE
 
 
