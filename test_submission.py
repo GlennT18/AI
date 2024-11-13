@@ -1,79 +1,96 @@
 #!/usr/bin/env python3
 
-import pytest
+from submission import *
+from logic import *
+
+import gzip
+import os
+import pickle
 import sys
 
-from submission import Solver
+import pytest
 
 
-@pytest.mark.it("CP+IS+FUN=TRUE")
-def test_google_example():
-    solution = Solver().solve('CP+IS+FUN=TRUE')
-    assert len(solution) == 72, "Incorrect total number of solutions"
-    assert {'C': 2, 'P': 3, 'I': 7, 'S': 4, 'F': 9,
-            'U': 6, 'N': 8, 'T': 1, 'R': 0, 'E': 5} in solution
+def test_1a():
+    _test_translation_question('q1a', question_1a())
 
 
-@pytest.mark.it("TWO+TWO=FOUR")
-def test_textbook_example():
-    solution = Solver().solve('TWO+TWO=FOUR')
-    assert len(solution) == 7, "Incorrect total number of solutions"
-    assert {'T': 7, 'W': 3, 'O': 4, 'F': 1, 'U': 6, 'R': 8} in solution
-    assert {'T': 7, 'W': 6, 'O': 5, 'F': 1, 'U': 3, 'R': 0} in solution
-    assert {'T': 8, 'W': 3, 'O': 6, 'F': 1, 'U': 7, 'R': 2} in solution
-    assert {'T': 8, 'W': 4, 'O': 6, 'F': 1, 'U': 9, 'R': 2} in solution
-    assert {'T': 8, 'W': 6, 'O': 7, 'F': 1, 'U': 3, 'R': 4} in solution
-    assert {'T': 9, 'W': 2, 'O': 8, 'F': 1, 'U': 5, 'R': 6} in solution
-    assert {'T': 9, 'W': 3, 'O': 8, 'F': 1, 'U': 7, 'R': 6} in solution
+def test_1b():
+    _test_translation_question('q1b', question_1b())
 
 
-@pytest.mark.it("CRASH+HACKER=REBOOT")
-def test_unique_solution_2():
-    solution = Solver().solve('CRASH+HACKER=REBOOT')
-    assert solution == [{
-        'C': 3, 'R': 6, 'A': 8, 'S': 4, 'H': 5,
-        'K': 9, 'E': 2, 'B': 0, 'O': 7, 'T': 1,
-    }]
+def test_1c():
+    _test_translation_question('q1c', question_1c())
 
 
-@pytest.mark.it("SEVEN+SEVEN+SIX=TWENTY")
-def test_unique_solution_3():
-    solution = Solver().solve('SEVEN+SEVEN+SIX=TWENTY')
-    assert solution == [{
-        'S': 6, 'E': 8, 'V': 7, 'N': 2, 'I': 5,
-        'X': 0, 'T': 1, 'W': 3, 'Y': 4,
-    }]
+def test_2a():
+    _test_translation_question('q2a', question_2a())
 
 
-@pytest.mark.it("HAWAII+IDAHO+IOWA+OHIO=STATES")
-def test_unique_solution_4():
-    solution = Solver().solve('HAWAII+IDAHO+IOWA+OHIO=STATES')
-    assert solution == [{
-        'H': 5, 'A': 1, 'W': 0, 'I': 9, 'D': 8,
-        'O': 3, 'S': 6, 'T': 2, 'E': 4,
-    }]
+def test_2b():
+    _test_translation_question('q2b', question_2b())
 
 
-@pytest.mark.it(
-    "ACCURACIES+ACCURACIES+ACCURACIES+ACCURACIES+ACCURACIES=MATHEMATICS")
-def test_unique_solution_5():
-    solution = Solver().solve(
-        'ACCURACIES+ACCURACIES+ACCURACIES+ACCURACIES+ACCURACIES'
-        '=MATHEMATICS')  # Don't worry, the string does not have a newline
-    assert solution == [{
-        'A': 2, 'C': 5, 'U': 3, 'R': 8, 'I': 4,
-        'E': 9, 'S': 0, 'M': 1, 'T': 7, 'H': 6,
-    }]
+def test_2c():
+    _test_translation_question(
+        'q2c', And(AntiReflexive('Owns'), question_2c()))
 
 
-@pytest.mark.it("TWELVE+TWELVE+TWELVE+TWELVE+TWELVE+THIRTY=NINETY")
-def test_unique_solution_6():
-    solution = Solver().solve(
-        'TWELVE+TWELVE+TWELVE+TWELVE+TWELVE+THIRTY=NINETY')
-    assert solution == [{
-        'T': 1, 'W': 3, 'E': 0, 'L': 7, 'V': 6,
-        'H': 9, 'I': 4, 'R': 2, 'Y': 5, 'N': 8,
-    }]
+def test_3a_fact_0():
+    _test_3a_fact(0)
+
+
+def test_3a_fact_1():
+    _test_3a_fact(1)
+
+
+def test_3a_fact_2():
+    _test_3a_fact(2)
+
+
+def test_3a_fact_3():
+    _test_3a_fact(3)
+
+
+def test_3a_fact_4():
+    _test_3a_fact(4)
+
+
+def test_3a_all_facts():
+    objects, target_models = load_model('q3a-all')
+    formulas, _ = question_3a()
+    check_models(objects, target_models, AndList(formulas))
+
+
+def _test_translation_question(question: str, formula):
+    objects, target_models = load_model(question)
+    check_models(objects, target_models, formula)
+
+
+def _test_3a_fact(index: int):
+    objects, target_models = load_model(f'q3a-{index}')
+    formulas, _ = question_3a()
+    check_models(objects, target_models, formulas[index])
+
+
+def hashkey(model):
+    return tuple(sorted(str(atom) for atom in model))
+
+
+def load_model(model_name):
+    filename = os.path.join('models', f'{model_name}.pklz')
+    return pickle.load(gzip.open(filename, 'rb'))
+
+
+def check_models(objects, target_models, formula: Formula):
+    pred_models = performModelChecking(
+        [formula],
+        findAll=True,
+        objects=objects,
+    )
+    target_model_set = set(hashkey(model) for model in target_models)
+    pred_model_set = set(hashkey(model) for model in pred_models)
+    assert pred_model_set == target_model_set, "Incorrect formula"
 
 
 if __name__ == '__main__':

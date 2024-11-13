@@ -1,128 +1,142 @@
-from ortools.sat.python import cp_model
-from typing import Dict, List
+from logic import *
 
-# Please do not rename this variable!
-STEP2_RESPONSE = """
-TODO: Set your answer to step 2's question to this variable's value
+from typing import List, Tuple
 
-Multi-line string is supported, in case your response is long.
-"""
 
-def findSum(input, base, letterDict):
-        baseCount = len(input)-1
-        #iterate over every letter
-        total = 0
-        for letter in input:
-            #multiple letter by base
-            #TRUE
-            #sum(T * base * base * base, R * base * base, U * base, E)
-            value = letterDict[letter]
-            multiplier = base**baseCount
+############################################################
+# Question 1: Propositional Logic
 
-            #print(value, multiplier)
-            total += value * multiplier
-            baseCount -= 1
+# Sentence: "If it is a weekend and it is not raining, then I will go out."
+def question_1a() -> Formula:
+    # Symbols to use:
+    #
+    # It is a weekend
+    Weekend = Atom('Weekend')
+    # It is raining
+    Raining = Atom('Raining')
+    # I will go out
+    GoOut = Atom('GoOut')
 
-        return total
+    # Don't forget to return the constructed formula!
+    # BEGIN_YOUR_CODE
+    raise NotImplementedError  # TODO: Replace this line with your code
+    # END_YOUR_CODE
 
-class VarArraySolutionPrinter(cp_model.CpSolverSolutionCallback):
-    """Print intermediate solutions. Pulled from CPSolver"""
 
-    def __init__(self, variables: list[cp_model.IntVar]):
-        cp_model.CpSolverSolutionCallback.__init__(self)
-        self.__variables = variables
-        self.__solution_count = 0
+# Sentence: "We shut down servers only if it is Sunday."
+def question_1b() -> Formula:
+    # Symbols to use:
+    #
+    # We shut down servers
+    ShutDownServers = Atom('ShutDownServers')
+    # It is Sunday
+    Sunday = Atom('Sunday')
 
-    def on_solution_callback(self) -> None:
-        self.__solution_count += 1
-        for v in self.__variables:
-            print(f"{v}={self.value(v)}", end=" ")
-        print()
+    # Don't forget to return the constructed formula!
+    # BEGIN_YOUR_CODE
+    raise NotImplementedError  # TODO: Replace this line with your code
+    # END_YOUR_CODE
 
-    @property
-    def solution_count(self) -> int:
-        return self.__solution_count
 
-class Solver:
-    def __init__(self):
-        # If you want to add any fields to this class, define them here
-        pass
+# Sentence: "A new ticket is opened if and only if a new issue has been
+# discovered or a new feature has been proposed."
+def question_1c() -> Formula:
+    # Symbols to use:
+    #
+    # A new ticket is opened
+    NewTicket = Atom('NewTicket')
+    # A new issue has been discovered
+    NewIssue = Atom('NewIssue')
+    # A new feature has been proposed
+    NewFeature = Atom('NewFeature')
 
-    def solve(self, puzzle: str) -> List[Dict[str, int]]:
-        #create constraints
-        model = cp_model.CpModel()
-        base = 10
+    # Don't forget to return the constructed formula!
+    # BEGIN_YOUR_CODE
+    raise NotImplementedError  # TODO: Replace this line with your code
+    # END_YOUR_CODE
 
-        #iterate over the input
-        letterSet = set()
-        symbolSet = ('+', '=')
-        letterDict = {}
-        sentance = ""
-        for letter in puzzle:
-            #if the letter is a symbol add it to the sentance but don't assign value
-            if(letter in symbolSet):
-                 sentance = sentance + letter
 
-            #makes sure each letter is only counted 1 time
-            if(letter not in letterSet and letter not in symbolSet):
-                letterSet.add(letter)
-                #map each letter to 1 or 0. 1 if it is leading, 0 if not
-                if(sentance == ""):
-                     letterDict[str(letter)] = 1
-                elif(sentance[-1] == "=" or sentance[-1] == "+"):
-                     letterDict[str(letter)] = 1
-                else:
-                     letterDict[str(letter)] = 0
-                
-                # letterDict[str(letter)] = counter
-                # counter += 1
-                sentance = sentance + letter
+############################################################
+# Question 2: First-Order Logic
 
-        #create constraints on the model for each letter and their precomputed value
-        modelLetters = []
-        for kp in letterDict:
-            #model.new_int_var(first_variable, base - 1, letter)
-            print("letter:",letterDict.get(kp), "base:", base - 1, "KeyPair:", kp)
-            x = model.new_int_var(letterDict.get(kp), base - 1, kp)
-            modelLetters.append(x)
+# Sentence: "Bob is either a programmer or a writer."
+def question_2a() -> Formula:
+    # Symbols to use:
+    #
+    # Bob
+    bob = Constant('bob')
+    # x is a programmer
+    def Programmer(x): return Atom('Programmer', x)
+    # x is a writer
+    def Writer(x): return Atom('Writer', x)
 
-        model.add_all_different(modelLetters)
+    # Don't forget to return the constructed formula!
+    # BEGIN_YOUR_CODE
+    raise NotImplementedError  # TODO: Replace this line with your code
+    # END_YOUR_CODE
 
-        #once you have created a variable for each letter
-        sentanceList = sentance.split("=")
-        rhs = sentanceList[1]
-        lhsList = sentanceList[0].split("+")
 
-        #sum both sides of the equation
-        rhsSum = findSum(rhs, base, letterDict) 
-        
-        lhsSum = 0
-        for listy in lhsList:
-             lhsSum += findSum(listy, base, letterDict)
-        
-        #print(lhsSum, rhsSum)
-        #add to model(model.add(lhs == rhs))
-        """
-        I think this is the issue. Documentation has this:
-        model.add(
-            c * base + p + i * base + s + f * base * base + u * base + n
-            == t * base * base * base + r * base * base + u * base + e
-        )
+# Sentence: "At least one student knows logic."
+def question_2b() -> Formula:
+    # Symbols to use:
+    #
+    # x is a student
+    def Student(x): return Atom('Student', x)
+    # x knows logic
+    def KnowsLogic(x): return Atom('KnowsLogic', x)
 
-        I am calculating the right hand side and left hand side to total values and adding them
-        to the model like this:
-        """
-        model.add(lhsSum == rhsSum)
+    # Don't forget to return the constructed formula!
+    # BEGIN_YOUR_CODE
+    raise NotImplementedError  # TODO: Replace this line with your code
+    # END_YOUR_CODE
 
-        #check doc to make the model find solutions in a dictionary
-        #dict = model.solve()
-        solver = cp_model.CpSolver()
-        solution_printer = VarArraySolutionPrinter(modelLetters)
 
-        solver.parameters.enumerate_all_solutions = True
-        status = solver.solve(model, solution_printer)
+# Sentence: "Every vehicle is owned by a person."
+def question_2c() -> Formula:
+    # Symbols to use:
+    #
+    # x is a vehicle
+    def Vehicle(x): return Atom('Vehicle', x)
+    # x is a person
+    def Person(x): return Atom('Person', x)
+    # x owns y
+    def Owns(x, y): return Atom('Owns', x, y)
 
-        #return dictionary of solutions
-        
+    # Don't forget to return the constructed formula!
+    # BEGIN_YOUR_CODE
+    raise NotImplementedError  # TODO: Replace this line with your code
+    # END_YOUR_CODE
 
-    
+
+############################################################
+# Question 3: Friendships and Criticisms
+
+# Domain of discourse: All people in RIT GCCIS
+# Facts:
+# 0. Matt is the dean.
+# 1. John is not the dean.
+# 2. John criticized Matt.
+# 3. If a person is a dean, then everyone either befriends that person or
+#    doesn't know that person.
+# 4. Nobody criticizes someone whom they befriend.
+# Query: Does John know Matt?
+#
+# This function returns a list of 5 formulas corresponding to each of the
+# above facts, along with a formula for the query.
+def question_3a() -> Tuple[List[Formula], Formula]:
+    def Dean(x): return Atom('Dean', x)
+    def Befriends(x, y): return Atom('Befriends', x, y)
+    def Knows(x, y): return Atom('Knows', x, y)
+    def Criticizes(x, y): return Atom('Criticizes', x, y)
+    matt = Constant('matt')
+    john = Constant('john')
+
+    formulas = []
+    # We provide the formula for fact 0 here:
+    formulas.append(Dean(matt))
+    # BEGIN_YOUR_CODE
+    raise NotImplementedError  # TODO: Replace this line with your code
+    # END_YOUR_CODE
+
+    query = Knows(john, matt)
+    return formulas, query
