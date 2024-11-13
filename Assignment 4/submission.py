@@ -144,7 +144,24 @@ def question_3a() -> Tuple[List[Formula], Formula]:
     # We provide the formula for fact 0 here:
     formulas.append(Dean(matt))
     # BEGIN_YOUR_CODE
-    raise NotImplementedError  # TODO: Replace this line with your code
+    formulas.append(Not(Dean(john)))          
+    formulas.append(Criticizes(john, matt))   
+    #explaining next formula
+    # Forall(x)                     - for every person
+    #   Implies(Dean(x))            - assumes that person is the dean
+    #       Forall(y)               - for every other person that is not the dean
+    #           Or                  - sets up for the last logic operation
+    #              Befriends(x,y)   - x is friend with y(dean is friend with person)
+    #              Not(Knows(x,y))  - x does not know y(dean does not know person)  
+    formulas.append(Forall('$x', Implies(Dean('$x'), Forall('$y', Or(Befriends('$y', '$x'), Not(Knows('$y', '$x')))))))
+
+    #explanation
+    # Forall(x)                     - for every person
+    #   Forall(y)                   - for every other person
+    #       Implies                 - sets up for the last operand
+    #           Befriends(x,y)      - x is friends with y
+    #           Not(Criticizes(x,y))- x does not criticize y because they are friends
+    formulas.append(Forall('$x', Forall('$y', Implies(Befriends('$x', '$y'), Not(Criticizes('$x', '$y'))))))
     # END_YOUR_CODE
 
     query = Knows(john, matt)
