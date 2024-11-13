@@ -3,9 +3,24 @@ from typing import Dict, List
 
 # Please do not rename this variable!
 STEP2_RESPONSE = """
-TODO: Set your answer to step 2's question to this variable's value
+The second arguement in new_int_var(x, y, letter) represents the upper bound
+the value tied to the letter can be. This model finds solutions that makes
+the left side equal the right side, and no letters can have the same value
+assigned to them. 
 
-Multi-line string is supported, in case your response is long.
+The values that are assigned to each letter are in a range of 1-9 or 0-9.
+9 is our upper bound(second variable). 
+
+So if our letter was C, the value assigned to that letter can be
+C:1
+C:2
+C:3
+C:4
+C:5
+C:6
+C:7
+C:8
+C:9
 """
 
 def findSum(input, base, letterDict):
